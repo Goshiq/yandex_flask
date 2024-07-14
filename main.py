@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from flask import Flask, abort, redirect, render_template
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 
+import jobs_api
 from data import db_session
 from data.job_form import JobForm
 from data.jobs import Jobs
@@ -146,6 +147,7 @@ def main():
     db_session.global_init("db/marsians.sqlite")
     global db_sess
     db_sess = db_session.create_session()
+    app.register_blueprint(jobs_api.blueprint)
     app.run(port=8080, host='127.0.0.1')
 
 
