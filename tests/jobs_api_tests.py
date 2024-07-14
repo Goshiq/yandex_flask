@@ -10,6 +10,11 @@ data_json = {"team_leader": 111, "job": "Easy work",
              "collaborators": "11, 222, 3333", "work_size": 10}
 print(put('http://localhost:8080/api/job/1', json=data_json).json())
 
+print('Обновление несуществующей записи')
+data_json = {"team_leader": 111, "job": "Easy work",
+             "collaborators": "11, 222, 3333", "work_size": 10}
+print(put('http://localhost:8080/api/job/111', json=data_json).json())
+
 print('Создание работы без id team_leader-а')
 data_json = {"job": "Hard work", "collaborators": "1, 2, 3", "work_size": 90}
 print(post('http://localhost:8080/api/jobs', json=data_json).json())
@@ -31,6 +36,12 @@ print(get('http://localhost:8080/api/jobs', json=data_json).json())
 
 print("Удаление записи")
 print(delete('http://localhost:8080/api/job/1', json=data_json).json())
+
+print("Создание нескольких корректных записей для последующего удаления")
+for i in range(5):
+    data_json = {"team_leader": i, "job": f"Hard work: {i}",
+                 "collaborators": f"{i}, 1, 2, 3", "work_size": 10 * i}
+    print(post('http://localhost:8080/api/jobs', json=data_json).json())
 
 print("Удаление всех записей")
 print(delete('http://localhost:8080/api/jobs', json=data_json).json())
