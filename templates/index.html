@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+{{ message }}
+<div>
+    <a href="/add_job" class="btn btn-success">
+        Добавить работу
+    </a>
+</div>
+{% endif %}
+{% if jobs %}
+<h1>Список работ</h1>
+{% for job in jobs %}
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">id</th>
+        <th scope="col">Описание работы</th>
+        <th scope="col">Лидер</th>
+        <th scope="col">Объём работы в часах</th>
+        <th scope="col">Список участников</th>
+        <th scope="col">Завершено</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">{{ job.id }}</th>
+        <td>{{ job.job }}</td>
+        <td>{{ job.team_leader }}</td>
+        <td>{{ job.work_size }}</td>
+        <td>{{ job.collaborators }}</td>
+        <td>{% if job.is_finished %}
+                Да
+            {% else %}
+                Нет
+            {% endif %}</td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <a href="/job/{{ job.id }}" class="btn btn-warning">
+        Изменить
+    </a>
+    <a href="/job/delete/{{ job.id }}" class="btn btn-danger">
+        Удалить
+    </a>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}
