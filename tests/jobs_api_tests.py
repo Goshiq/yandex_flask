@@ -5,10 +5,16 @@ data_json = {"team_leader": 1, "job": "Hard work",
              "collaborators": "1, 2, 3", "work_size": 90}
 print(post('http://localhost:8080/api/jobs', json=data_json).json())
 
+print('Получение всех работ')
+print(get('http://localhost:8080/api/jobs').json())
+
 print('Обновление созданной записи')
 data_json = {"team_leader": 111, "job": "Easy work",
              "collaborators": "11, 222, 3333", "work_size": 10}
 print(put('http://localhost:8080/api/job/1', json=data_json).json())
+
+print('Получение всех работ, проверка обновления')
+print(get('http://localhost:8080/api/jobs').json())
 
 print('Обновление несуществующей записи')
 data_json = {"team_leader": 111, "job": "Easy work",
