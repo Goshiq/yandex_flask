@@ -34,6 +34,20 @@ def get_jobs():
     )
 
 
+@blueprint.route("/api/jobs", methods=['DELETE'])
+def delete_jobs():
+    db_sess = db_session.create_session()
+    res = db_sess.query(Jobs).all()
+    ids = [job.id for job in res]
+    for job_id in ids:
+        delete_job(job_id)
+    return jsonify(
+        {
+            "success": ids
+        }
+    )
+
+
 @blueprint.route("/api/job/<job_id>", methods=['GET'])
 def get_job(job_id):
     db_sess = db_session.create_session()
@@ -45,6 +59,38 @@ def get_job(job_id):
             "jobs": res.to_dict(only=("job", "team_leader", "collaborators", "work_size"))
         }
     )
+
+
+@blueprint.route("/api/job/<job_id>", methods=['DELETE'])
+def delete_job(job_id):
+    db_sess = db_session.create_session()
+    res = db_sess.query(Jobs).get(job_id)
+    if not res:
+        return make_response(jsonify({'error': 'Not found'}), 404)
+    db_sess.delete(res)
+    db_sess.commit()
+    return {"success": f"{res.id}"}
+
+
+@blueprint.route("/api/job/<job_id>", methods=['PUT'])
+def update_job(job_id):
+    if not request.json:
+        return make_response(jsonify({'error': 'Empty request'}), 400)
+
+    db_sess = db_session.create_session()
+    res = db_sess.query(Jobs).get(job_id)
+    if not res:
+        return make_response(jsonify({'error': 'Not found'}), 404)
+    if "team_leader" in request.json:
+        res.team_leader = request.json["team_leader"]
+    if "job" in request.json:
+        res.job = request.json["job"]
+    if "work_size" in request.json:
+        res.work_size = request.json["work_size"]
+    if "collaborators" in request.json:
+        res.collaborators = request.json["collaborators"]
+    db_sess.commit()
+    return {"success": res.to_dict(only=("job", "team_leader", "collaborators", "work_size"))}
 
 
 @blueprint.route('/api/jobs', methods=['POST'])
